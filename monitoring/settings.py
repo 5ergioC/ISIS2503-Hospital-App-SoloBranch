@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'monitoring.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'armonia_db',
-        'USER': 'armonia_user',
-        'PASSWORD': 'armonia_gp_3',
-        'HOST': '10.128.0.2',
-        'PORT': '5432',
+        'NAME': 'capibara_db',
+        'USER': 'capibara_user',
+        'PASSWORD': 'olapibas',
+        'HOST': '10.128.0.52',
+        'PORT': '',
     }
 }
 
