@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="content">
+    <div class="">
+        <div class="page-header-title">
+            <h4 class="page-title">Last Ten Measures</h4>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="page-content-wrapper">
+        <div class="container">
+ 
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr style="color:#0E2EB0">
+                            <th font color="red">Cliente</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Descripcion</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% for measurement in MRI_list %}
+                            <tr>
+                                <td>{{ measurement.cliente.name }}</td>
+                                <td>{{ measurement.fecha }}</td>
+                                <td>{{ measurement.hora }}</td>
+                                <td>{{ measurement.descripcion }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div style="text-align:center;">
+                        <button type="button" class="btn btn-primary waves-effect waves-light"
+                                onClick=" window.location.href='/' ">
+                            Back
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
