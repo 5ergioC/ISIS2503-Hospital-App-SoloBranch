@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Verificación de Integridad de Clientes</h2>
+<table>
+<thead>
+    <tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Integridad</th>
+    </tr>
+</thead>
+<tbody>
+    {% for cliente in clientes %}
+    <tr>
+    <td>{{ cliente.id }}</td>
+    <td>{{ cliente.name }}</td>
+    <td>
+        {% if cliente.verify_integrity %}
+        ✅ OK
+        {% else %}
+        ❌ FAIL
+        {% endif %}
+    </td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+{% endblock %}

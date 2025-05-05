@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse
 from .forms import ClienteForm
 from .logic.cliente_logic import get_clientes, create_cliente
@@ -38,3 +38,32 @@ def cliente_create(request):
         return render(request, 'cliente/clienteCreate.html', context)
     else:
         return HttpResponse("Unauthorized User")
+    
+@login_required
+def cliente_integrity_check(request):
+    clientes = get_clientes()
+    return render(request, 'cliente/integridad.html', {'clientes': clientes})
+
+@login_required
+def verificar_integridad_view(request):
+    total = 0
+    corruptos = 0
+    registros_corruptos = []
+    clientes = get_clientes()
+    for cliente in clientes:
+        total += 1
+        if not cliente.verificar_integridad():
+            corruptos += 1
+            registros_corruptos.append({
+                "id": cliente.id,
+                "name": cliente.name,
+                "hash_guardado": cliente.hash_integridad,
+                "hash_esperado": cliente.generar_hash(),
+            })
+
+    return JsonResponse({
+        "total_registros": total,
+        "registros_corruptos": corruptos,
+        "porcentaje_corruptos": (corruptos / total) * 100 if total else 0,
+        "detalles": registros_corruptos,
+    })

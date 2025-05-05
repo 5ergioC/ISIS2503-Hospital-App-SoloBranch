@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'MRI',
     'cliente',
     'social_django',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -153,3 +154,16 @@ AUTHENTICATION_BACKENDS = {
     'monitoring.auth0backend.Auth0', 
     'django.contrib.auth.backends.ModelBackend', 
     }
+
+# Config for Celery
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mipanaelgpt@gmail.com'
+EMAIL_HOST_PASSWORD = 'hpvd xvax bcvz slki'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

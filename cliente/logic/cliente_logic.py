@@ -1,10 +1,13 @@
 from ..models import Cliente
 
 def get_clientes():
-    queryset = Cliente.objects.all()
-    return (queryset)
+    clientes = Cliente.objects.all()
+    for cliente in clientes:
+        if not cliente.verify_integrity():
+            print(f'¡Alerta! Cliente con ID {cliente.id} tiene datos modificados.')
+    return clientes
 
 def create_cliente(form):
-    measurement = form.save()
-    measurement.save()
-    return ()
+    cliente = form.save(commit=False)
+    cliente.save()
+    return cliente
