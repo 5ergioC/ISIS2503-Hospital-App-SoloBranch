@@ -1,0 +1,333 @@
+# ***************** Universidad de los Andes ***********************
+# ****** Departamento de Ingeniería de Sistemas y Computación ******
+# ********** Arquitectura y diseño de Software - ISIS2503 **********
+#
+# Infraestructura para laboratorio de Circuit Breaker
+# Elementos a desplegar:
+# 1. Firewalls:
+#    - cbd-services-apps
+#    - cbd-services-apps-web
+#    - cbd-circuit-breaker
+#    - cbd-circuit-breaker-admin
+#    - cbd-hospital-db
+# 2. Router y NAT:
+#    - cbd-router
+#    - cbd-nat
+# 3. Instancias MVs:
+#    - cbd-kong-instance
+#    - cbd-db-instance (postgreSQL instalado y configurado)
+#    - cbd-alarms-app-(a-c) (Monitoring app instalada)
+#    - cbd-monitoring-app (Monitoring app instalada y ejecutando)
+
+resources:
+# Firewall rules
+- name: cbd-services-apps
+  type: compute.v1.firewall
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    priority: 1000
+    direction: INGRESS
+    sourceTags: 
+    - cbd-circuit-breaker
+    targetTags:
+    - cbd-services-firewall
+    allowed:
+    - IPProtocol: TCP
+      ports: 
+      - 8080
+- name: cbd-services-apps-web
+  type: compute.v1.firewall
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    priority: 1000
+    direction: INGRESS
+    sourceRanges: 
+    - 0.0.0.0/0
+    targetTags:
+    - cbd-services-firewall
+    allowed:
+    - IPProtocol: TCP
+      ports: 
+      - 8080
+- name: cbd-circuit-breaker
+  type: compute.v1.firewall
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    priority: 1000
+    direction: INGRESS
+    sourceRanges: 
+    - 0.0.0.0/0
+    targetTags:
+    - cbd-circuit-breaker
+    allowed:
+    - IPProtocol: TCP
+      ports: 
+      - 8000
+- name: cbd-circuit-breaker-admin
+  type: compute.v1.firewall
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    priority: 1000
+    direction: INGRESS
+    sourceRanges: 
+    - 0.0.0.0/0
+    targetTags:
+    - cbd-circuit-breaker
+    allowed:
+    - IPProtocol: TCP
+      ports: 
+      - 8001
+- name: cbd-hospital-db
+  type: compute.v1.firewall
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    priority: 1000
+    direction: INGRESS
+    sourceTags: 
+    - cbd-services-firewall
+    targetTags:
+    - cbd-hospital-db
+    allowed:
+    - IPProtocol: TCP
+      ports: 
+      - 5432
+
+
+# Router y NAT
+- name: cbd-router
+  type: compute.v1.router
+  properties:
+    region: us-central1
+    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    nats:
+    - name: cbd-nat
+      natIpAllocateOption: AUTO_ONLY
+      sourceSubnetworkIpRangesToNat: ALL_SUBNETWORKS_ALL_IP_RANGES
+
+
+# Kong instance
+- type: compute.v1.instance
+  name: cbd-kong-instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.51
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    tags:
+      items: 
+      - cbd-circuit-breaker
+
+# Database instance
+- type: compute.v1.instance
+  name: cbd-db-instance
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.52
+    tags:
+      items: 
+      - cbd-hospital-db
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo apt-get update
+          sudo apt-get install -y postgresql postgresql-contrib
+          sudo -u postgres psql -c "CREATE USER capibara_user WITH PASSWORD 'olapibas';"
+          sudo -u postgres createdb -O capibara_user capibara_db
+          echo "host all all 0.0.0.0/0 trust" | sudo tee -a /etc/postgresql/12/main/pg_hba.conf
+          echo "listen_addresses='*'" | sudo tee -a /etc/postgresql/12/main/postgresql.conf
+          echo "max_connections=2000" | sudo tee -a /etc/postgresql/12/main/postgresql.conf
+          sudo service postgresql restart
+
+# Hospital app instances
+- type: compute.v1.instance
+  name: hospital-app-a
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.56
+    tags:
+      items: 
+      - cbd-services-firewall
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo apt-get update
+          sudo apt install python3-pip -y
+          sudo mkdir /sprint3
+          cd /sprint3
+          sudo git clone https://github.com/5ergioC/ISIS2503-Hospital-App-SoloBranch.git
+          cd ISIS2503-Hospital-App-SoloBranch
+          sudo git checkout main
+          sudo pip3 install -r requirements.txt
+          sudo python3 manage.py makemigrations
+          sudo python3 manage.py migrate
+
+- type: compute.v1.instance
+  name: hospital-app-b
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.57
+    tags:
+      items: 
+      - cbd-services-firewall
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo apt-get update
+          sudo apt install python3-pip -y
+          sudo mkdir /sprint3
+          cd /sprint3
+          sudo git clone https://github.com/5ergioC/ISIS2503-Hospital-App-SoloBranch.git
+          cd ISIS2503-Hospital-App-SoloBranch
+          sudo git checkout main
+          sudo pip3 install -r requirements.txt
+          sudo python3 manage.py makemigrations
+          sudo python3 manage.py migrate
+
+- type: compute.v1.instance
+  name: hospital-app-c
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.58
+    tags:
+      items: 
+      - cbd-services-firewall
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo apt-get update
+          sudo apt install python3-pip -y
+          sudo mkdir /sprint3
+          cd /sprint3
+          sudo git clone https://github.com/5ergioC/ISIS2503-Hospital-App-SoloBranch.git
+          cd ISIS2503-Hospital-App-SoloBranch
+          sudo git checkout main
+          sudo pip3 install -r requirements.txt
+          sudo python3 manage.py makemigrations
+          sudo python3 manage.py migrate
+
+- type: compute.v1.instance
+  name: hospital-app-d
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.59
+    tags:
+      items: 
+      - cbd-services-firewall
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo apt-get update
+          sudo apt install python3-pip -y
+          sudo mkdir /sprint3
+          cd /sprint3
+          sudo git clone https://github.com/5ergioC/ISIS2503-Hospital-App-SoloBranch.git
+          cd ISIS2503-Hospital-App-SoloBranch
+          sudo git checkout main
+          sudo pip3 install -r requirements.txt
+          sudo python3 manage.py makemigrations
+          sudo python3 manage.py migrate
+
+- type: compute.v1.instance
+  name: hospital-app-e
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+      networkIP: 10.128.0.60
+    tags:
+      items: 
+      - cbd-services-firewall
+    metadata:
+      items:
+      - key: startup-script
+        value: |
+          #!/bin/bash
+          sudo apt-get update
+          sudo apt install python3-pip -y
+          sudo mkdir /sprint3
+          cd /sprint3
+          sudo git clone https://github.com/5ergioC/ISIS2503-Hospital-App-SoloBranch.git
+          cd ISIS2503-Hospital-App-SoloBranch
+          sudo git checkout main
+          sudo pip3 install -r requirements.txt
+          sudo python3 manage.py makemigrations
+          sudo python3 manage.py migrate

@@ -7,12 +7,11 @@
       </elementProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ataque mismo usuario (10 hilos, inicio controlado)">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ataque mismo usuario (10 hilos, carga ligera)" enabled="true">
         <intProp name="ThreadGroup.num_threads">10</intProp>
         <intProp name="ThreadGroup.ramp_time">10</intProp>
         <longProp name="ThreadGroup.duration">120</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Controlador Bucle">
           <stringProp name="LoopController.loops">1</stringProp>
@@ -189,12 +188,11 @@
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ataque mismo usuario (50 hilos, carga moderada)">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ataque mismo usuario (50 hilos, carga moderada)" enabled="true">
         <intProp name="ThreadGroup.num_threads">50</intProp>
         <intProp name="ThreadGroup.ramp_time">10</intProp>
         <longProp name="ThreadGroup.duration">120</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Controlador Bucle">
           <stringProp name="LoopController.loops">1</stringProp>
@@ -289,7 +287,7 @@
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Informe Agregado">
+          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Informe Agregado" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -326,7 +324,7 @@
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener">
+          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
             <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="graphiteMetricsSender" elementType="Argument">
@@ -376,7 +374,6 @@
         <intProp name="ThreadGroup.ramp_time">10</intProp>
         <longProp name="ThreadGroup.duration">120</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Controlador Bucle">
           <stringProp name="LoopController.loops">1</stringProp>
@@ -471,7 +468,7 @@
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Informe Agregado">
+          <ResultCollector guiclass="StatVisualizer" testclass="ResultCollector" testname="Informe Agregado" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
               <name>saveConfig</name>
@@ -508,7 +505,7 @@
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener">
+          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
             <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="graphiteMetricsSender" elementType="Argument">
@@ -553,12 +550,11 @@
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ataque mismo usuario (500 hilos, ataque total)">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Ataque mismo usuario (500 hilos, ataque)">
         <intProp name="ThreadGroup.num_threads">500</intProp>
         <intProp name="ThreadGroup.ramp_time">10</intProp>
         <longProp name="ThreadGroup.duration">120</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
-        <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Controlador Bucle">
           <stringProp name="LoopController.loops">1</stringProp>
@@ -690,7 +686,7 @@
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
-          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener">
+          <BackendListener guiclass="BackendListenerGui" testclass="BackendListener" testname="Backend Listener" enabled="true">
             <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="graphiteMetricsSender" elementType="Argument">
