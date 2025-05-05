@@ -42,7 +42,7 @@ def cliente_create(request):
 @login_required
 def cliente_integrity_check(request):
     clientes = get_clientes()
-    return render(request, 'cliente/clienteIntegridad.html', {'clientes': clientes})
+    return render(request, 'cliente/clientesIntegridad.html', {'clientes': clientes})
 
 @login_required
 def verificar_integridad_view(request):
