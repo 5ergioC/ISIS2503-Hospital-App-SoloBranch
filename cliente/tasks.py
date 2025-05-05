@@ -22,7 +22,7 @@ def verificar_integridad_clientes():
             subject='Alerta de Integridad: Datos corruptos detectados',
             message=f'Se detectaron {corruptos} clientes con datos corruptos:\n' + "\n".join(corruptos),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['admin@tusistema.com'],  # Puedes poner aquí múltiples correos si deseas
+            recipient_list=['sergioalejandro.casta@gmail.com'],  
             fail_silently=False,
         )
 
