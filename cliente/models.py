@@ -3,7 +3,7 @@ from django.db import models
 
 class Cliente(models.Model):
     name = models.CharField(max_length=50)
-    data_hash = models.CharField(max_length=64, editable=False, blank=True)
+    hash_integridad = models.CharField(max_length=64, editable=False, blank=True)
 
     def save(self, *args, **kwargs):
         self.hash_integridad = self.generar_hash()
