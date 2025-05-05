@@ -41,29 +41,37 @@ def cliente_create(request):
     
 @login_required
 def cliente_integrity_check(request):
-    clientes = get_clientes()
-    return render(request, 'cliente/clientesIntegridad.html', {'clientes': clientes})
+    role = getRole(request)
+    if role == "Medico":
+        clientes = get_clientes()
+        return render(request, 'cliente/clientesIntegridad.html', {'clientes': clientes})
+    else:
+        return HttpResponse("Unauthorized User")
 
 @login_required
 def verificar_integridad_view(request):
-    total = 0
-    corruptos = 0
-    registros_corruptos = []
-    clientes = get_clientes()
-    for cliente in clientes:
-        total += 1
-        if not cliente.verificar_integridad():
-            corruptos += 1
-            registros_corruptos.append({
-                "id": cliente.id,
-                "name": cliente.name,
-                "hash_guardado": cliente.hash_integridad,
-                "hash_esperado": cliente.generar_hash(),
-            })
+    role = getRole(request)
+    if role == "Medico":
+        total = 0
+        corruptos = 0
+        registros_corruptos = []
+        clientes = get_clientes()
+        for cliente in clientes:
+            total += 1
+            if not cliente.verificar_integridad():
+                corruptos += 1
+                registros_corruptos.append({
+                    "id": cliente.id,
+                    "name": cliente.name,
+                    "hash_guardado": cliente.hash_integridad,
+                    "hash_esperado": cliente.generar_hash(),
+                })
 
-    return JsonResponse({
-        "total_registros": total,
-        "registros_corruptos": corruptos,
-        "porcentaje_corruptos": (corruptos / total) * 100 if total else 0,
-        "detalles": registros_corruptos,
-    })
+        return JsonResponse({
+            "total_registros": total,
+            "registros_corruptos": corruptos,
+            "porcentaje_corruptos": (corruptos / total) * 100 if total else 0,
+            "detalles": registros_corruptos,
+        })
+    else:
+        return HttpResponse("Unauthorized User")
