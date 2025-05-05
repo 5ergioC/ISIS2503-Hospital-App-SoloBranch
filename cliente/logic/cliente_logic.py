@@ -3,7 +3,7 @@ from ..models import Cliente
 def get_clientes():
     clientes = Cliente.objects.all()
     for cliente in clientes:
-        if not cliente.verify_integrity():
+        if not cliente.verificar_integridad():
             print(f'¡Alerta! Cliente con ID {cliente.id} tiene datos modificados.')
     return clientes
 
