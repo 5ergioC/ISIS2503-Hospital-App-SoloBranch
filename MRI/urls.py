@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('mri/', views.mri_list, name='mri_list'),
-    path('mri/create/', views.mri_create, name='mri_create'),
+    path('mri/command/', views.mri_command, name='mri_command'),   # writes
+    path('mri/query/', views.mri_list_query, name='mri_query'),    # reads
 ]
