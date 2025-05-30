@@ -6,3 +6,6 @@ python-dotenv==0.10.1
 social-auth-app-django==3.1.0
 celery==5.2.0
 redis==4.0.0
+pytz==2018.7
+pymongo==3.7.2
+djangorestframework==3.9.0
