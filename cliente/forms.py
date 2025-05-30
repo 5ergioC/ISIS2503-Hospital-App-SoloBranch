@@ -6,7 +6,13 @@ class ClienteForm(forms.ModelForm):
         model = Cliente
         fields = [
             'name',
+            'email',
+            'phone',
+            'address',
         ]
         labels = {
-            'name': 'Name',
+            'name': 'Nombre',
+            'email': 'Correo Electrónico',
+            'phone': 'Teléfono',
+            'address': 'Dirección',
         }

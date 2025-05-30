@@ -1,12 +1,31 @@
-{% extends 'base.html' %}
-{% block content %}
-<form method="POST">
-    {% csrf_token %}
-    <br>
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success waves-effect waves-light">Create</button>
-    <button type="button" class="btn btn-primary waves-effect waves-light"
-                                onClick=" window.location.href='/measurements' ">Back
-    </button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Crear Examen MRI</title>
+</head>
+<body>
+    <h1>Crear Examen MRI</h1>
+
+    <form method="POST" action="{% url 'mri_create' %}">
+        {% csrf_token %}
+        <label for="cliente_id">Cliente ID:</label><br />
+        <input type="text" id="cliente_id" name="cliente_id" required /><br /><br />
+
+        <label for="fecha">Fecha (YYYY-MM-DD):</label><br />
+        <input type="date" id="fecha" name="fecha" required /><br /><br />
+
+        <label for="hora">Hora (HH:MM):</label><br />
+        <input type="time" id="hora" name="hora" required /><br /><br />
+
+        <label for="descripcion">Descripción:</label><br />
+        <textarea id="descripcion" name="descripcion" rows="4" cols="50"></textarea><br /><br />
+
+        <label for="imagen_url">URL Imagen (opcional):</label><br />
+        <input type="url" id="imagen_url" name="imagen_url" /><br /><br />
+
+        <button type="submit">Crear Examen MRI</button>
+    </form>
+
+</body>
+</html>

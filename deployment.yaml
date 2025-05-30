@@ -24,7 +24,7 @@ resources:
 - name: cbd-services-apps
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceTags: 
@@ -38,7 +38,7 @@ resources:
 - name: cbd-services-apps-web
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -52,7 +52,7 @@ resources:
 - name: cbd-circuit-breaker
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -66,7 +66,7 @@ resources:
 - name: cbd-circuit-breaker-admin
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -80,7 +80,7 @@ resources:
 - name: cbd-hospital-db
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceTags: 
@@ -92,13 +92,27 @@ resources:
       ports: 
       - 5432
 
+- name: nosqld-firewall-mongo
+  type: compute.v1.firewall
+  properties:
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    priority: 1000
+    direction: INGRESS
+    sourceTags: 
+    - cbd-services-firewall
+    targetTags:
+    - nosqld-mongo
+    allowed:
+    - IPProtocol: TCP
+      ports: 
+      - 27017
 
 # Router y NAT
 - name: cbd-router
   type: compute.v1.router
   properties:
     region: us-central1
-    network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
     nats:
     - name: cbd-nat
       natIpAllocateOption: AUTO_ONLY
@@ -110,7 +124,7 @@ resources:
   name: cbd-kong-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -119,7 +133,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.51
       accessConfigs:
       - name: External NAT
@@ -133,7 +147,7 @@ resources:
   name: cbd-db-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -142,7 +156,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.52
     tags:
       items: 
@@ -161,12 +175,35 @@ resources:
           echo "max_connections=2000" | sudo tee -a /etc/postgresql/12/main/postgresql.conf
           sudo service postgresql restart
 
-# Hospital app instances
+# Mongo Database instance
 - type: compute.v1.instance
-  name: hospital-app-a
+  name: nosqld-mongo-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    disks:
+    - deviceName: boot
+      type: PERSISTENT
+      boot: true
+      autoDelete: true
+      initializeParams:
+        sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-101-17162-386-64
+    networkInterfaces:
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+      networkIP: 10.128.0.70
+      accessConfigs:
+      - name: External NAT
+        type: ONE_TO_ONE_NAT
+    tags:
+      items: 
+      - nosqld-mongo
+
+# Hospital app instances
+- type: compute.v1.instance
+  name: microservicio-mri-a
+  properties:
+    zone: us-central1-a
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -175,7 +212,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.56
     tags:
       items: 
@@ -199,10 +236,10 @@ resources:
           celery -A monitoring beat --loglevel=info
 
 - type: compute.v1.instance
-  name: hospital-app-b
+  name: microservicio-mri-b
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -211,7 +248,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.57
     tags:
       items: 
@@ -235,10 +272,10 @@ resources:
           celery -A monitoring beat --loglevel=info
 
 - type: compute.v1.instance
-  name: hospital-app-c
+  name:  microservicio-cliente-a
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -247,7 +284,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.58
     tags:
       items: 
@@ -271,10 +308,10 @@ resources:
           celery -A monitoring beat --loglevel=info
 
 - type: compute.v1.instance
-  name: hospital-app-d
+  name: microservicio-cliente-b
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -283,44 +320,8 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
       networkIP: 10.128.0.59
-    tags:
-      items: 
-      - cbd-services-firewall
-    metadata:
-      items:
-      - key: startup-script
-        value: |
-          #!/bin/bash
-          sudo apt-get update
-          sudo apt install python3-pip -y
-          sudo mkdir /sprint3
-          cd /sprint3
-          sudo git clone https://github.com/5ergioC/ISIS2503-Hospital-App-SoloBranch.git
-          cd ISIS2503-Hospital-App-SoloBranch
-          sudo git checkout main
-          sudo pip3 install -r requirements.txt
-          sudo python3 manage.py makemigrations
-          sudo python3 manage.py migrate
-          celery -A monitoring worker --loglevel=info
-          celery -A monitoring beat --loglevel=info
-
-- type: compute.v1.instance
-  name: hospital-app-e
-  properties:
-    zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/zones/us-central1-a/machineTypes/e2-micro
-    disks:
-    - deviceName: boot
-      type: PERSISTENT
-      boot: true
-      autoDelete: true
-      initializeParams:
-        sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
-    networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/neat-bliss-451911-m3/global/networks/default
-      networkIP: 10.128.0.60
     tags:
       items: 
       - cbd-services-firewall

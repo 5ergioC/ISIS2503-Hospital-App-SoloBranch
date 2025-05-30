@@ -1,9 +1,7 @@
 from django.urls import path
-from django.views.decorators.csrf import csrf_exempt
-
 from . import views
 
 urlpatterns = [
-    path('MRI/', views.MRI_list),
-    path('MRIcreate/', csrf_exempt(views.MRI_create), name='MRICreate'),
+    path('mri/', views.mri_list, name='mri_list'),
+    path('mri/create/', views.mri_create, name='mri_create'),
 ]

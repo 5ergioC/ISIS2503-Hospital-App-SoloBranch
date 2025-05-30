@@ -88,6 +88,8 @@ DATABASES = {
     }
 }
 
+MONGO_CLI = os.getenv("MONGO_CLI", "mongodb://capibara_user:olapibas@10.128.0.70:27017/mri_db?authSource=admin")
+
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -167,3 +169,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mipanaelgpt@gmail.com'
 EMAIL_HOST_PASSWORD = 'hpvd xvax bcvz slki'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
