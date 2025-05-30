@@ -24,7 +24,7 @@ resources:
 - name: cbd-services-apps
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceTags: 
@@ -38,7 +38,7 @@ resources:
 - name: cbd-services-apps-web
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -52,7 +52,7 @@ resources:
 - name: cbd-circuit-breaker
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -66,7 +66,7 @@ resources:
 - name: cbd-circuit-breaker-admin
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -80,7 +80,7 @@ resources:
 - name: cbd-hospital-db
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceTags: 
@@ -95,7 +95,7 @@ resources:
 - name: nosqld-firewall-mongo
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceTags: 
@@ -112,7 +112,7 @@ resources:
   type: compute.v1.router
   properties:
     region: us-central1
-    network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
     nats:
     - name: cbd-nat
       natIpAllocateOption: AUTO_ONLY
@@ -124,7 +124,7 @@ resources:
   name: cbd-kong-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -133,7 +133,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.51
       accessConfigs:
       - name: External NAT
@@ -147,7 +147,7 @@ resources:
   name: cbd-db-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -156,7 +156,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.52
     tags:
       items: 
@@ -180,7 +180,7 @@ resources:
   name: nosqld-mongo-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -189,7 +189,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/cos-cloud/global/images/cos-101-17162-386-64
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.70
       accessConfigs:
       - name: External NAT
@@ -203,7 +203,7 @@ resources:
   name: microservicio-mri-a
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -212,7 +212,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.56
     tags:
       items: 
@@ -239,7 +239,7 @@ resources:
   name: microservicio-mri-b
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -248,7 +248,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.57
     tags:
       items: 
@@ -275,7 +275,7 @@ resources:
   name:  microservicio-cliente-a
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -284,7 +284,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.58
     tags:
       items: 
@@ -311,7 +311,7 @@ resources:
   name: microservicio-cliente-b
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -320,7 +320,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/<id-proyecto>/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/s1-g8-sprint4/global/networks/default
       networkIP: 10.128.0.59
     tags:
       items: 
